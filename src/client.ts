@@ -1,25 +1,26 @@
-import { hydrate as hydrateSimpleCounter } from './components/simpleCounter.js';
-import { hydrate as hydrateCounter } from './components/counter.js';
-import { hydrate as hydrateTimer } from './components/timer.js';
+import * as counter from './components/counter.js';
+import * as simpleCounter from './components/simpleCounter.js';
+import * as timer from './components/timer.js';
 
-// コンポーネント名 → hydrate関数 のマッピング
-const components: Record<string, (el: HTMLElement, props: any) => void> = {
-  counter: hydrateCounter,
-  simpleCounter: hydrateSimpleCounter,
-  timer: hydrateTimer
-};
+// コンポーネント名 → モジュール のマッピング
+const components = {
+  counter,
+  simpleCounter,
+  timer
+} as const;
 
-// data-component 属性を持つ全要素を探してハイドレート
+type ComponentName = keyof typeof components;
+
 document.querySelectorAll<HTMLElement>('[data-component]').forEach((el) => {
-  const name = el.dataset.component!;
+  const name = el.dataset.component as ComponentName;
   const props = JSON.parse(el.dataset.props ?? '{}');
 
-  const hydrate = components[name];
-  if (!hydrate) {
+  const component = components[name];
+  if (!component) {
     console.warn(`Unknown component: ${name}`);
     return;
   }
 
   console.log(`hydrating: ${name}`, props);
-  hydrate(el, props);
+  component.hydrate(el, props);
 });

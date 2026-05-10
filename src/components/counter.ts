@@ -1,12 +1,14 @@
-export function render(count: number): string {
+export type Props = { count: number };
+
+export function render(props: Props): string {
   return `
-    <div data-component="counter" data-props='${JSON.stringify({ count })}'>
-      <button>Count: ${count}</button>
+    <div data-component="counter" data-props='${JSON.stringify(props)}'>
+      <button>Count: ${props.count}</button>
     </div>
   `;
 }
 
-export function hydrate(el: HTMLElement, props: { count: number }): void {
+export function hydrate(el: HTMLElement, props: Props): void {
   const btn = el.querySelector('button')!;
   let count = props.count;
 

@@ -17,10 +17,10 @@ const server = http.createServer((req, res) => {
     <html>
       <body>
         <h1>My Hydration</h1>
-        ${renderSimpleCounter(5)}
-        ${renderCounter(10)}
-        ${renderCounter(100)}
-        ${renderTimer(1)}
+        ${renderSimpleCounter({ count: 5 })}
+        ${renderCounter({ count: 10 })}
+        ${renderCounter({ count: 100 })}
+        ${renderTimer({ count: 1 })}
         <script src="/client.js"></script>
       </body>
     </html>
