@@ -1,32 +1,40 @@
 import http from 'node:http';
 import fs from 'node:fs';
-import { render as renderSimpleCounter } from './components/simpleCounter.js';
-import { render as renderCounter } from './components/counter.js';
-import { render as renderTimer } from './components/timer.js';
+import { layout } from './layout.js';
+import * as homePage from './pages/home.js';
+import * as aboutPage from './pages/about.js';
+
+// ルートテーブル
+const routes: Record<string, () => string> = {
+  '/': homePage.render,
+  '/about': aboutPage.render
+};
 
 const server = http.createServer((req, res) => {
   console.log('request:', req.url);
 
+  // /client.js のリクエスト
   if (req.url === '/client.js') {
     res.setHeader('Content-Type', 'text/javascript');
     return res.end(fs.readFileSync('./dist/client.js'));
   }
 
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <body>
-        <h1>My Hydration</h1>
-        ${renderSimpleCounter({ count: 5 })}
-        ${renderCounter({ count: 10 })}
-        ${renderCounter({ count: 100 })}
-        ${renderTimer({ count: 1 })}
-        <script src="/client.js"></script>
-      </body>
-    </html>
-  `;
+  // ノイズリクエストを無視
+  if (req.url === '/favicon.ico' || req.url?.startsWith('/.well-known/')) {
+    res.writeHead(204);
+    return res.end();
+  }
+
+  // ルーティング
+  const pageRender = routes[req.url ?? '/'];
+
+  if (!pageRender) {
+    res.writeHead(404, { 'Content-Type': 'text/html' });
+    return res.end(layout('<h1>404 Not Found</h1>'));
+  }
+
   res.setHeader('Content-Type', 'text/html');
-  res.end(html);
+  res.end(layout(pageRender()));
 });
 
 server.listen(3000, () => console.log('http://localhost:3000'));
