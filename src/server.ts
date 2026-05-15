@@ -25,7 +25,22 @@ const server = http.createServer((req, res) => {
     return res.end();
   }
 
-  // ルーティング
+  // SPAナビゲーション用: /_page?path=/about → ページの中身だけ返す
+  if (req.url?.startsWith('/_page')) {
+    const url = new URL(req.url, 'http://localhost');
+    const path = url.searchParams.get('path') ?? '/';
+    const pageRender = routes[path];
+
+    if (!pageRender) {
+      res.writeHead(404, { 'Content-Type': 'text/html' });
+      return res.end(layout('<h1>404 Not Found</h1>'));
+    }
+
+    res.setHeader('Content-Type', 'text/html');
+    return res.end(pageRender());
+  }
+
+  // 通常のルーティング(従来通り)
   const pageRender = routes[req.url ?? '/'];
 
   if (!pageRender) {
