@@ -1,19 +1,28 @@
+import type { Component } from '../types.js';
+
 export type Props = { count: number };
 
-export function render(props: Props): string {
+export const render: Component<Props>['render'] = (props) => {
   return `
     <div data-component="simpleCounter" data-props='${JSON.stringify(props)}'>
       <button>Count: ${props.count}</button>
     </div>
   `;
-}
+};
 
-export function hydrate(el: HTMLElement, props: Props): void {
+export const hydrate: Component<Props>['hydrate'] = (el, props) => {
   const btn = el.querySelector('button')!;
   let count = props.count;
 
-  btn.addEventListener('click', () => {
+  const handleClick = () => {
     count++;
     btn.textContent = `Count: ${count}`;
-  });
-}
+  };
+
+  btn.addEventListener('click', handleClick);
+
+  return () => {
+    console.log('simpleCounter cleanup!');
+    btn.removeEventListener('click', handleClick);
+  };
+};

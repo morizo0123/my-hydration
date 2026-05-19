@@ -12,6 +12,9 @@ const components = {
 
 type ComponentName = keyof typeof components;
 
+// 要素ごとのクリーンアップ関数を保管
+const cleanups = new WeakMap<HTMLElement, () => void>();
+
 // 指定した要素配下のコンポーネントを全部ハイドレート
 function hydrateAll(root: ParentNode) {
   root.querySelectorAll<HTMLElement>('[data-component]').forEach((el) => {
@@ -25,7 +28,24 @@ function hydrateAll(root: ParentNode) {
     }
 
     console.log(`hydrating: ${name}`, props);
-    component.hydrate(el, props);
+    const cleanup = component.hydrate(el, props);
+
+    // クリーンアップ関数が返されたら保管しておく
+    if (typeof cleanup === 'function') {
+      cleanups.set(el, cleanup);
+    }
+  });
+}
+
+// 指定要素配下のコンポーネントを全部クリーンアップ
+function cleanupAll(root: ParentNode) {
+  root.querySelectorAll<HTMLElement>('[data-component]').forEach((el) => {
+    const cleanup = cleanups.get(el);
+
+    if (cleanup) {
+      cleanup();
+      cleanups.delete(el);
+    }
   });
 }
 
@@ -37,6 +57,9 @@ async function navigate(path: string): Promise<void> {
   const html = await res.text();
 
   const main = document.querySelector('main')!;
+
+  // DOMを書き換える前に、消えるコンポーネントをクリーンアップ
+  cleanupAll(main);
   main.innerHTML = html;
 
   // URLを更新(リロードせずに見た目だけ変える)
