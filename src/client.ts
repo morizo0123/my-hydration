@@ -1,13 +1,17 @@
 import * as counter from './components/counter.js';
 import * as simpleCounter from './components/simpleCounter.js';
 import * as timer from './components/timer.js';
+import * as messageButton from './components/messageButton.js';
+import * as messageLabel from './components/messageLabel.js';
 import { MODE } from './config.js';
 
 // コンポーネント名 → モジュール のマッピング
 const components = {
   counter,
   simpleCounter,
-  timer
+  timer,
+  messageButton,
+  messageLabel
 } as const;
 
 type ComponentName = keyof typeof components;
