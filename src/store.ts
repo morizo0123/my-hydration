@@ -1,23 +1,13 @@
-type Listener = () => void;
+import { createStore } from './createStore';
 
-let count = 0;
-const listeners = new Set<Listener>();
+const countStore = createStore(0);
 
 export function getCount(): number {
-  return count;
+  return countStore.get();
 }
 
 export function increment(): void {
-  count++;
-  // 状態が変わったので、購読者全員に通知
-  listeners.forEach((listener) => listener());
+  countStore.set(countStore.get() + 1);
 }
 
-// 購読する。戻り値は「購読を解除する関数」
-export function subscribe(listener: Listener): () => void {
-  listeners.add(listener);
-
-  return () => {
-    listeners.delete(listener);
-  };
-}
+export const subscribe = countStore.subscribe;

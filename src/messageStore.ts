@@ -1,26 +1,17 @@
-type Listener = () => void;
+import { createStore } from './createStore';
 
-let message = 'Hello';
 const messages = ['Hello', 'こんにちは', 'Bonjour', '你好'];
 let index = 0;
 
-const listeners = new Set<Listener>();
+const messageStore = createStore(messages[0]);
 
 export function getMessage(): string {
-  return message;
+  return messageStore.get();
 }
 
 export function nextMessage(): void {
-  // ここを埋める(indexを次に進めて、messageを更新して、listeners全員に通知)
   index++;
-  message = messages[index % messages.length];
-  listeners.forEach((listener) => listener());
+  messageStore.set(messages[index % messages.length]);
 }
 
-export function subscribe(listener: Listener): () => void {
-  listeners.add(listener);
-
-  return () => {
-    listeners.delete(listener);
-  };
-}
+export const subscribe = messageStore.subscribe;
