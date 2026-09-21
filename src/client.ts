@@ -5,6 +5,8 @@ import * as messageButton from './components/messageButton.js';
 import * as messageLabel from './components/messageLabel.js';
 import * as appCount from './components/appCount.js';
 import * as appMessage from './components/appMessage.js';
+import * as userLabel from './components/userLabel.js';
+import * as userEditor from './components/userEditor.js';
 import { MODE } from './config.js';
 
 // コンポーネント名 → モジュール のマッピング
@@ -15,7 +17,9 @@ const components = {
   messageButton,
   messageLabel,
   appCount,
-  appMessage
+  appMessage,
+  userLabel,
+  userEditor
 } as const;
 
 type ComponentName = keyof typeof components;

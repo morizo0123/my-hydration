@@ -6,7 +6,8 @@ export type Store<T> = {
   subscribe: (listener: Listener) => () => void;
   subscribeSelector: <S>(
     selector: (state: T) => S,
-    listener: (selected: S) => void
+    listener: (selected: S) => void,
+    isEqual?: (a: S, b: S) => boolean
   ) => () => void;
 };
 
@@ -28,13 +29,14 @@ export function createStore<T>(initial: T): Store<T> {
     },
     subscribeSelector: <S>(
       selector: (state: T) => S,
-      listener: (selected: S) => void
+      listener: (selected: S) => void,
+      isEqual: (a: S, b: S) => boolean = Object.is
     ) => {
       let prev = selector(value);
       console.log('prev：', prev);
       const wrapper: Listener = () => {
         const next = selector(value);
-        if (next !== prev) {
+        if (!isEqual(next, prev)) {
           prev = next;
           listener(next);
         }
