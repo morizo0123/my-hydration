@@ -3,14 +3,16 @@ import fs from 'node:fs';
 import { layout } from './layout.js';
 import * as homePage from './pages/home.js';
 import * as aboutPage from './pages/about.js';
+import * as usersPage from './pages/users.js';
 
 // ルートテーブル
-const routes: Record<string, () => string> = {
+const routes: Record<string, () => string | Promise<string>> = {
   '/': homePage.render,
-  '/about': aboutPage.render
+  '/about': aboutPage.render,
+  '/users': usersPage.render
 };
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   console.log('request:', req.url);
 
   // /client.js のリクエスト
@@ -37,7 +39,7 @@ const server = http.createServer((req, res) => {
     }
 
     res.setHeader('Content-Type', 'text/html');
-    return res.end(pageRender());
+    return res.end(await pageRender());
   }
 
   // 通常のルーティング(従来通り)
@@ -49,7 +51,7 @@ const server = http.createServer((req, res) => {
   }
 
   res.setHeader('Content-Type', 'text/html');
-  res.end(layout(pageRender()));
+  res.end(layout(await pageRender()));
 });
 
 server.listen(3000, () => console.log('http://localhost:3000'));

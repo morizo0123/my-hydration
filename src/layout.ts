@@ -8,7 +8,7 @@ export function layout(content: string): string {
       <body>
         <header>
           <nav>
-            <a href="/">Home</a> | <a href="/about">About</a>
+            <a href="/">Home</a> | <a href="/about">About</a> | <a href="/users">Users</a>
           </nav>
         </header>
 
