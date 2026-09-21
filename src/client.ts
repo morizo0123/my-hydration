@@ -3,6 +3,8 @@ import * as simpleCounter from './components/simpleCounter.js';
 import * as timer from './components/timer.js';
 import * as messageButton from './components/messageButton.js';
 import * as messageLabel from './components/messageLabel.js';
+import * as appCount from './components/appCount.js';
+import * as appMessage from './components/appMessage.js';
 import { MODE } from './config.js';
 
 // コンポーネント名 → モジュール のマッピング
@@ -11,7 +13,9 @@ const components = {
   simpleCounter,
   timer,
   messageButton,
-  messageLabel
+  messageLabel,
+  appCount,
+  appMessage
 } as const;
 
 type ComponentName = keyof typeof components;

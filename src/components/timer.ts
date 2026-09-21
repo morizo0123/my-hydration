@@ -17,7 +17,7 @@ export const hydrate: Component<Props>['hydrate'] = (el, props) => {
   const intervalId = setInterval(() => {
     count++;
     spanEl.textContent = `CountUpTimer: ${count}`;
-    console.log('timer tick:', count);
+    // console.log('timer tick:', count);
   }, 1000);
 
   return () => {
