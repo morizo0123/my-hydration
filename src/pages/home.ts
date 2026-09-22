@@ -7,7 +7,7 @@ import { render as renderAppMessage } from '../components/appMessage.js';
 import { render as renderUserLabel } from '../components/userLabel.js';
 import { render as renderUserEditor } from '../components/userEditor.js';
 
-export function render(): string {
+export function render(_params: Record<string, string> = {}): string {
   return `
     <h1>Home</h1>
     <div style="border: 1px solid orange; padding: 8px;">

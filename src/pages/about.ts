@@ -1,7 +1,7 @@
 import { render as renderSimpleCounter } from '../components/simpleCounter.js';
 import { render as renderMessageLabel } from '../components/messageLabel.js';
 
-export function render(): string {
+export function render(_params: Record<string, string> = {}): string {
   return `
     <h1>About</h1>
     <p>このサイトは、Node.js + TypeScript + Vite でハイドレーションを学ぶ目的で作りました。</p>
