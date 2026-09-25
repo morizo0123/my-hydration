@@ -1,3 +1,6 @@
+import { render as renderSortButtons } from '../components/sortButtons.js';
+import { render as renderUsersList } from '../components/usersList.js';
+
 type User = {
   id: number;
   name: string;
@@ -11,20 +14,24 @@ export async function render(
   const res = await fetch('https://jsonplaceholder.typicode.com/users');
   const users: User[] = await res.json();
 
+  // 表示用データを絞る(サイズ削減)
+  const usersForClient = users.map((u) => ({
+    id: u.id,
+    name: u.name,
+    email: u.email,
+    username: u.username
+  }));
+
   return `
-  <h1>Users</h1>
-  <p>JSONPlaceholderから取得したユーザー一覧です。</p>
-  <ul>
-    ${users
-      .map(
-        (user) => `
-      <li>
-        <a href="/users/${user.id}"><strong>${user.name}</strong></a>
-        (@${user.username}) - ${user.email}
-      </li>
-    `
-      )
-      .join('')}
-  </ul>
-`;
+    <h1>Users</h1>
+    <p>JSONPlaceholderから取得したユーザー一覧です。</p>
+
+    ${renderSortButtons({})}
+    ${renderUsersList({ users: usersForClient })}
+
+    <script>
+      window.__INITIAL_STATE__ = window.__INITIAL_STATE__ || {};
+      window.__INITIAL_STATE__.users = ${JSON.stringify(usersForClient)};
+    </script>
+  `;
 }

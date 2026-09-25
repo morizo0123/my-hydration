@@ -7,7 +7,29 @@ import * as appCount from './components/appCount.js';
 import * as appMessage from './components/appMessage.js';
 import * as userLabel from './components/userLabel.js';
 import * as userEditor from './components/userEditor.js';
+import * as usersList from './components/usersList.js';
+import * as sortButtons from './components/sortButtons.js';
 import { MODE } from './config.js';
+import { setUsers, type User } from './usersStore.js';
+
+// 型宣言(既存の window.__INITIAL_STATE__ に users を追加)
+declare global {
+  interface Window {
+    __INITIAL_STATE__?: {
+      users?: User[];
+    };
+  }
+}
+
+// 初期化: サーバーから受け取ったデータをストアに注入
+if (window.__INITIAL_STATE__?.users) {
+  console.log(
+    'hydrating users store with',
+    window.__INITIAL_STATE__.users.length,
+    'users'
+  );
+  setUsers(window.__INITIAL_STATE__.users);
+}
 
 // コンポーネント名 → モジュール のマッピング
 const components = {
@@ -19,7 +41,9 @@ const components = {
   appCount,
   appMessage,
   userLabel,
-  userEditor
+  userEditor,
+  usersList,
+  sortButtons
 } as const;
 
 type ComponentName = keyof typeof components;
